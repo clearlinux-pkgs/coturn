@@ -1,0 +1,18 @@
+
+[Unit]
+Description=coTURN STUN/TURN Server
+Documentation=man:coturn(1) man:turnadmin(1) man:turnserver(1)
+
+[Service]
+RuntimeDirectory=turnserver
+ExecStart=/usr/bin/turnserver -c /etc/turnserver.conf --pidfile /run/turnserver/turnserver.pid
+Restart=on-failure
+InaccessibleDirectories=/home
+PrivateTmp=yes
+User=turnserver
+Group=turnserver
+
+
+[Install]
+WantedBy=multi-user.target
+Alias=coturn.service
