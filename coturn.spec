@@ -4,7 +4,7 @@
 #
 Name     : coturn
 Version  : 4.5.1.1
-Release  : 2
+Release  : 3
 URL      : https://github.com/coturn/coturn/archive/4.5.1.1.tar.gz
 Source0  : https://github.com/coturn/coturn/archive/4.5.1.1.tar.gz
 Source1  : turnserver.service
@@ -18,6 +18,8 @@ Requires: coturn-man = %{version}-%{release}
 Requires: coturn-services = %{version}-%{release}
 BuildRequires : openssl-dev
 BuildRequires : pkgconfig(libevent)
+Patch1: CVE-2020-6061.patch
+Patch2: CVE-2020-6062.patch
 
 %description
 The TURN Server is a VoIP media traffic NAT traversal server and gateway. It
@@ -133,21 +135,24 @@ services components for the coturn package.
 
 %prep
 %setup -q -n coturn-4.5.1.1
+cd %{_builddir}/coturn-4.5.1.1
+%patch1 -p1
+%patch2 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1567201963
+export SOURCE_DATE_EPOCH=1582667312
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 "
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FCFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -mzero-caller-saved-regs=used "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -159,11 +164,11 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make TEST_VERBOSE=1 test
 
 %install
-export SOURCE_DATE_EPOCH=1567201963
+export SOURCE_DATE_EPOCH=1582667312
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/coturn
-cp LICENSE %{buildroot}/usr/share/package-licenses/coturn/LICENSE
-cp LICENSE.OpenSSL %{buildroot}/usr/share/package-licenses/coturn/LICENSE.OpenSSL
+cp %{_builddir}/coturn-4.5.1.1/LICENSE %{buildroot}/usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24
+cp %{_builddir}/coturn-4.5.1.1/LICENSE.OpenSSL %{buildroot}/usr/share/package-licenses/coturn/c9c50bd46b69aba62e61c65d8ab08dd1e8c83b38
 %make_install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/turnserver.service
@@ -270,8 +275,8 @@ install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/turnserver.servic
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/coturn/LICENSE
-/usr/share/package-licenses/coturn/LICENSE.OpenSSL
+/usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24
+/usr/share/package-licenses/coturn/c9c50bd46b69aba62e61c65d8ab08dd1e8c83b38
 
 %files man
 %defattr(0644,root,root,0755)
