@@ -4,7 +4,7 @@
 #
 Name     : coturn
 Version  : 4.5.2
-Release  : 6
+Release  : 7
 URL      : https://github.com/coturn/coturn/archive/4.5.2.tar.gz
 Source0  : https://github.com/coturn/coturn/archive/4.5.2.tar.gz
 Source1  : turnserver.service
