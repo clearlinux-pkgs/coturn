@@ -1,0 +1,22 @@
+--- coturn-4.5.2/src/client/ns_turn_msg.c~	2021-01-10 19:59:55.000000000 +0000
++++ coturn-4.5.2/src/client/ns_turn_msg.c	2022-09-13 15:18:05.132239421 +0000
+@@ -245,9 +245,6 @@
+ 		EVP_MD_CTX ctx;
+ 		EVP_MD_CTX_init(&ctx);
+ #if defined EVP_MD_CTX_FLAG_NON_FIPS_ALLOW && !defined(LIBRESSL_VERSION_NUMBER)
+-		if (FIPS_mode()) {
+-			EVP_MD_CTX_set_flags(&ctx,EVP_MD_CTX_FLAG_NON_FIPS_ALLOW);
+-		}
+ #endif
+ 		EVP_DigestInit_ex(&ctx,EVP_md5(), NULL);
+ 		EVP_DigestUpdate(&ctx,str,strl);
+@@ -257,9 +254,6 @@
+ 		unsigned int keylen = 0;
+ 		EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+ #if defined EVP_MD_CTX_FLAG_NON_FIPS_ALLOW && ! defined(LIBRESSL_VERSION_NUMBER)
+-		if (FIPS_mode()) {
+-			EVP_MD_CTX_set_flags(ctx, EVP_MD_CTX_FLAG_NON_FIPS_ALLOW);
+-		}
+ #endif
+ 		EVP_DigestInit_ex(ctx,EVP_md5(), NULL);
+ 		EVP_DigestUpdate(ctx,str,strl);

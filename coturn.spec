@@ -4,7 +4,7 @@
 #
 Name     : coturn
 Version  : 4.5.2
-Release  : 7
+Release  : 8
 URL      : https://github.com/coturn/coturn/archive/4.5.2.tar.gz
 Source0  : https://github.com/coturn/coturn/archive/4.5.2.tar.gz
 Source1  : turnserver.service
@@ -18,6 +18,7 @@ Requires: coturn-man = %{version}-%{release}
 Requires: coturn-services = %{version}-%{release}
 BuildRequires : openssl-dev
 BuildRequires : pkgconfig(libevent)
+Patch1: build.patch
 
 %description
 The TURN Server is a VoIP media traffic NAT traversal server and gateway. It
@@ -134,21 +135,22 @@ services components for the coturn package.
 %prep
 %setup -q -n coturn-4.5.2
 cd %{_builddir}/coturn-4.5.2
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1610585519
+export SOURCE_DATE_EPOCH=1663082373
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
 export NM=gcc-nm
-export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -fzero-call-used-regs=used "
-export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -fzero-call-used-regs=used "
-export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -fzero-call-used-regs=used "
-export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=4 -fstack-protector-strong -fzero-call-used-regs=used "
+export CFLAGS="$CFLAGS -O3 -ffat-lto-objects -flto=auto -fstack-protector-strong -fzero-call-used-regs=used "
+export FCFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto -fstack-protector-strong -fzero-call-used-regs=used "
+export FFLAGS="$FFLAGS -O3 -ffat-lto-objects -flto=auto -fstack-protector-strong -fzero-call-used-regs=used "
+export CXXFLAGS="$CXXFLAGS -O3 -ffat-lto-objects -flto=auto -fstack-protector-strong -fzero-call-used-regs=used "
 %configure --disable-static
 make  %{?_smp_mflags}
 
@@ -160,11 +162,11 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make TEST_VERBOSE=1 test
 
 %install
-export SOURCE_DATE_EPOCH=1610585519
+export SOURCE_DATE_EPOCH=1663082373
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/coturn
-cp %{_builddir}/coturn-4.5.2/LICENSE %{buildroot}/usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24
-cp %{_builddir}/coturn-4.5.2/LICENSE.OpenSSL %{buildroot}/usr/share/package-licenses/coturn/c9c50bd46b69aba62e61c65d8ab08dd1e8c83b38
+cp %{_builddir}/coturn-%{version}/LICENSE %{buildroot}/usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24 || :
+cp %{_builddir}/coturn-%{version}/LICENSE.OpenSSL %{buildroot}/usr/share/package-licenses/coturn/c9c50bd46b69aba62e61c65d8ab08dd1e8c83b38 || :
 %make_install
 mkdir -p %{buildroot}/usr/lib/systemd/system
 install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/turnserver.service
