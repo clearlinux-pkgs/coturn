@@ -1,0 +1,41 @@
+From d24fad44d83487253bfe2a5ba691dce3da7835e6 Mon Sep 17 00:00:00 2001
+From: William Douglas <william.douglas@intel.com>
+Date: Wed, 26 Jun 2024 09:55:01 -0700
+Subject: [PATCH] Fix build
+
+Signed-off-by: William Douglas <william.douglas@intel.com>
+---
+ src/client/ns_turn_msg.c | 10 ----------
+ 1 file changed, 10 deletions(-)
+
+diff --git a/src/client/ns_turn_msg.c b/src/client/ns_turn_msg.c
+index 0039bce..9b3b769 100644
+--- a/src/client/ns_turn_msg.c
++++ b/src/client/ns_turn_msg.c
+@@ -244,11 +244,6 @@ int stun_produce_integrity_key_str(const uint8_t *uname, const uint8_t *realm, c
+     unsigned int keylen = 0;
+     EVP_MD_CTX ctx;
+     EVP_MD_CTX_init(&ctx);
+-#if defined EVP_MD_CTX_FLAG_NON_FIPS_ALLOW && !defined(LIBRESSL_VERSION_NUMBER)
+-    if (FIPS_mode()) {
+-      EVP_MD_CTX_set_flags(&ctx, EVP_MD_CTX_FLAG_NON_FIPS_ALLOW);
+-    }
+-#endif // defined EVP_MD_CTX_FLAG_NON_FIPS_ALLOW && !defined(LIBRESSL_VERSION_NUMBER)
+     EVP_DigestInit_ex(&ctx, EVP_md5(), NULL);
+     EVP_DigestUpdate(&ctx, str, strl);
+     EVP_DigestFinal(&ctx, key, &keylen);
+@@ -266,11 +261,6 @@ int stun_produce_integrity_key_str(const uint8_t *uname, const uint8_t *realm, c
+ #else // OPENSSL_VERSION_NUMBER >= 0x10100000L && OPENSSL_VERSION_NUMBER < 0x30000000L
+     unsigned int keylen = 0;
+     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
+-#if defined EVP_MD_CTX_FLAG_NON_FIPS_ALLOW && !defined(LIBRESSL_VERSION_NUMBER)
+-    if (FIPS_mode()) {
+-      EVP_MD_CTX_set_flags(ctx, EVP_MD_CTX_FLAG_NON_FIPS_ALLOW);
+-    }
+-#endif
+     EVP_DigestInit_ex(ctx, EVP_md5(), NULL);
+     EVP_DigestUpdate(ctx, str, strl);
+     EVP_DigestFinal(ctx, key, &keylen);
+-- 
+2.45.1
+

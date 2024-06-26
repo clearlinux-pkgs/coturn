@@ -1,0 +1,3 @@
+install -D -m 0644 %{buildroot}/usr/etc/turnserver.conf.default %{buildroot}/usr/share/coturn/turnserver.conf.default
+rm %{buildroot}/usr/etc/turnserver.conf.default
+rmdir %{buildroot}/usr/etc
