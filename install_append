@@ -3,3 +3,5 @@ rm %{buildroot}/usr/etc/turnserver.conf.default
 rmdir %{buildroot}/usr/etc
 mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc
 mv %{buildroot}/usr/man %{buildroot}/usr/share/man
+rm %{buildroot}/usr/bin/turnadmin
+ln -sf turnserver %{buildroot}/usr/bin/turnadmin
