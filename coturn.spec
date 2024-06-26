@@ -7,7 +7,7 @@
 #
 Name     : coturn
 Version  : 4.6.2
-Release  : 9
+Release  : 10
 URL      : https://github.com/coturn/coturn/archive/4.6.2/coturn-4.6.2.tar.gz
 Source0  : https://github.com/coturn/coturn/archive/4.6.2/coturn-4.6.2.tar.gz
 Source1  : turnserver.service
@@ -17,6 +17,7 @@ License  : BSD-3-Clause
 Requires: coturn-bin = %{version}-%{release}
 Requires: coturn-data = %{version}-%{release}
 Requires: coturn-license = %{version}-%{release}
+Requires: coturn-man = %{version}-%{release}
 Requires: coturn-services = %{version}-%{release}
 BuildRequires : buildreq-cmake
 BuildRequires : glibc-dev
@@ -109,12 +110,29 @@ Requires: coturn = %{version}-%{release}
 dev components for the coturn package.
 
 
+%package doc
+Summary: doc components for the coturn package.
+Group: Documentation
+Requires: coturn-man = %{version}-%{release}
+
+%description doc
+doc components for the coturn package.
+
+
 %package license
 Summary: license components for the coturn package.
 Group: Default
 
 %description license
 license components for the coturn package.
+
+
+%package man
+Summary: man components for the coturn package.
+Group: Default
+
+%description man
+man components for the coturn package.
 
 
 %package services
@@ -136,7 +154,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1719422810
+export SOURCE_DATE_EPOCH=1719423128
 mkdir -p clr-build
 pushd clr-build
 export GCC_IGNORE_WERROR=1
@@ -173,7 +191,7 @@ FFLAGS="$CLEAR_INTERMEDIATE_FFLAGS"
 FCFLAGS="$CLEAR_INTERMEDIATE_FCFLAGS"
 ASFLAGS="$CLEAR_INTERMEDIATE_ASFLAGS"
 LDFLAGS="$CLEAR_INTERMEDIATE_LDFLAGS"
-export SOURCE_DATE_EPOCH=1719422810
+export SOURCE_DATE_EPOCH=1719423128
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/coturn
 cp %{_builddir}/coturn-%{version}/LICENSE %{buildroot}/usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24 || :
@@ -188,32 +206,12 @@ install -m 0644 %{SOURCE1} %{buildroot}/usr/lib/systemd/system/turnserver.servic
 install -D -m 0644 %{buildroot}/usr/etc/turnserver.conf.default %{buildroot}/usr/share/coturn/turnserver.conf.default
 rm %{buildroot}/usr/etc/turnserver.conf.default
 rmdir %{buildroot}/usr/etc
+mv %{buildroot}/usr/doc %{buildroot}/usr/share/doc
+mv %{buildroot}/usr/man %{buildroot}/usr/share/man
 ## install_append end
 
 %files
 %defattr(-,root,root,-)
-/usr/doc/turnserver/INSTALL
-/usr/doc/turnserver/LICENSE
-/usr/doc/turnserver/README.turnadmin
-/usr/doc/turnserver/README.turnserver
-/usr/doc/turnserver/README.turnutils
-/usr/doc/turnserver/postinstall.txt
-/usr/doc/turnserver/schema.mongo.sh
-/usr/doc/turnserver/schema.sql
-/usr/doc/turnserver/schema.stats.redis
-/usr/doc/turnserver/schema.userdb.redis
-/usr/doc/turnserver/testmongosetup.sh
-/usr/doc/turnserver/testredisdbsetup.sh
-/usr/doc/turnserver/testsqldbsetup.sql
-/usr/man/man1/coturn.1
-/usr/man/man1/turnadmin.1
-/usr/man/man1/turnserver.1
-/usr/man/man1/turnutils.1
-/usr/man/man1/turnutils_natdiscovery.1
-/usr/man/man1/turnutils_oauth.1
-/usr/man/man1/turnutils_peer.1
-/usr/man/man1/turnutils_stunclient.1
-/usr/man/man1/turnutils_uclient.1
 
 %files bin
 %defattr(-,root,root,-)
@@ -349,9 +347,37 @@ rmdir %{buildroot}/usr/etc
 /usr/lib64/cmake/coturn/turncommonConfig.cmake
 /usr/lib64/cmake/coturn/turncommonConfigVersion.cmake
 
+%files doc
+%defattr(0644,root,root,0755)
+/usr/share/doc/turnserver/INSTALL
+/usr/share/doc/turnserver/LICENSE
+/usr/share/doc/turnserver/README.turnadmin
+/usr/share/doc/turnserver/README.turnserver
+/usr/share/doc/turnserver/README.turnutils
+/usr/share/doc/turnserver/postinstall.txt
+/usr/share/doc/turnserver/schema.mongo.sh
+/usr/share/doc/turnserver/schema.sql
+/usr/share/doc/turnserver/schema.stats.redis
+/usr/share/doc/turnserver/schema.userdb.redis
+/usr/share/doc/turnserver/testmongosetup.sh
+/usr/share/doc/turnserver/testredisdbsetup.sh
+/usr/share/doc/turnserver/testsqldbsetup.sql
+
 %files license
 %defattr(0644,root,root,0755)
 /usr/share/package-licenses/coturn/44edc3a7a30e912f10454aee90d312a5d0d7fa24
+
+%files man
+%defattr(0644,root,root,0755)
+/usr/share/man/man1/coturn.1
+/usr/share/man/man1/turnadmin.1
+/usr/share/man/man1/turnserver.1
+/usr/share/man/man1/turnutils.1
+/usr/share/man/man1/turnutils_natdiscovery.1
+/usr/share/man/man1/turnutils_oauth.1
+/usr/share/man/man1/turnutils_peer.1
+/usr/share/man/man1/turnutils_stunclient.1
+/usr/share/man/man1/turnutils_uclient.1
 
 %files services
 %defattr(-,root,root,-)
